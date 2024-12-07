@@ -96,7 +96,7 @@ private:
 
 public:
     HangmanGame(const vector<string>& words, const string& highScoresFile)
-        : words(words), highScoresFile(highScoresFile), attemptsLeft(6), hintsRemaining(1) {
+        : words(words), highScoresFile(highScoresFile), attemptsLeft(6), hintsRemaining(2) {
         highScores = loadHighScores(highScoresFile);
     }
 
@@ -143,12 +143,18 @@ public:
 
     // Aktualizacja logiki gry
     void update(char guess) {
+        if (guess == '?') { // Sprawdzenie, czy gracz chce u¿yæ podpowiedzi
+            useHint();
+            return;
+        }
+
         guess = tolower(guess); // Konwersja do ma³ej litery
 
         if (!isalpha(guess)) { // Sprawdzenie poprawnoœci wejœcia
             cout << "Wprowadz poprawna litere!" << endl;
             return;
         }
+
 
         if (guessedLetters[guess - 'a']) { // Sprawdzanie w tablicy
             cout << "Juz zgadywales te litere!" << endl;
@@ -189,7 +195,7 @@ public:
         guessedWord = string(word.size(), '_');
         fill(begin(guessedLetters), end(guessedLetters), false); // Resetowanie tablicy
         attemptsLeft = 6;
-        hintsRemaining = 1; // Reset liczby podpowiedzi
+        hintsRemaining = 2; // Reset liczby podpowiedzi
         startTime = time(nullptr);
 
         cout << "\nRozpoczynamy gre w Wisielca!\n";
