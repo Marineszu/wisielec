@@ -89,7 +89,7 @@ private:
     string highScoresFile;
     string word;
     string guessedWord;
-    map<char, bool> guessedLetters;
+    bool guessedLetters[26] = { false };
     int attemptsLeft;
     int hintsRemaining; // Liczba dostêpnych podpowiedzi
     time_t startTime;

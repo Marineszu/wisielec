@@ -5,4 +5,7 @@ C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): wa
 C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:         [
 C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:             _Ty=int
 C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:         ]
-  wysielec_gra.vcxproj -> C:\Users\Mateusz\source\repos\wysielec_gra\x64\Debug\wysielec_gra.exe
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(188,24): error C2228: po lewej ".clear" musi być typ struct/union
+      C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(188,24):
+      typ to "bool [26]"
+  
