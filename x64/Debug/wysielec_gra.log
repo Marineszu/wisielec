@@ -1,3 +1,9 @@
 ﻿  wisielec.cpp
-C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(79,15): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(80,15): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267: "argument": konwersja z "size_t" do "_Ty", możliwa utrata danych
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:         with
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:         [
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:             _Ty=int
+C:\Users\Mateusz\source\repos\wysielec_gra\wysielec_gra\wisielec.cpp(132,65): warning C4267:         ]
+  LINK : nie znaleziono elementu C:\Users\Mateusz\source\repos\wysielec_gra\x64\Debug\wysielec_gra.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
   wysielec_gra.vcxproj -> C:\Users\Mateusz\source\repos\wysielec_gra\x64\Debug\wysielec_gra.exe
