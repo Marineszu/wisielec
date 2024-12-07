@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <map>
+#include <random>
 
 using namespace std;
 
@@ -90,24 +91,62 @@ private:
     string guessedWord;
     map<char, bool> guessedLetters;
     int attemptsLeft;
+    int hintsRemaining; // Liczba dostêpnych podpowiedzi
     time_t startTime;
 
 public:
     HangmanGame(const vector<string>& words, const string& highScoresFile)
-        : words(words), highScoresFile(highScoresFile), attemptsLeft(6) {
+        : words(words), highScoresFile(highScoresFile), attemptsLeft(6), hintsRemaining(1) {
         highScores = loadHighScores(highScoresFile);
     }
 
-    // Obs³uga wejœcia
+    // Obsluga wejscia
     char handleInput() {
         char guess;
-        cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere: ";
+        cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere (lub wpisz znak ? aby uzyc podpowiedzi): ";
         cin >> guess;
         return guess;
     }
 
+    // Podpowiedz
+    void useHint() {
+        if (hintsRemaining <= 0) {
+            cout << "Nie masz juz podpowiedzi!" << endl;
+            return;
+        }
+
+        vector<size_t> hiddenIndices;
+        for (size_t i = 0; i < guessedWord.size(); ++i) {
+            if (guessedWord[i] == '_') {
+                hiddenIndices.push_back(i);
+            }
+        }
+
+        if (hiddenIndices.empty()) {
+            cout << "Nie ma juz ukrytych liter do ods³oniêcia!" << endl;
+            return;
+        }
+
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> dist(0, hiddenIndices.size() - 1);
+
+        size_t index = hiddenIndices[dist(gen)];
+        guessedWord[index] = word[index];
+        guessedLetters[word[index]] = true;
+
+        hintsRemaining--;
+        cout << "Odslonieta litera: " << word[index] << endl;
+        cout << "Slowo: " << guessedWord << endl;
+    }
+
     // Aktualizacja logiki gry
     void update(char guess) {
+        if (guess == '?') {
+            useHint();
+            return;
+        }
+
         if (guessedLetters[guess]) {
             cout << "Juz zgadywales te litere!" << endl;
             return;
@@ -134,7 +173,7 @@ public:
 
     // Renderowanie stanu gry
     void render() const {
-        cout << "Slowo: " << guessedWord << endl;
+        cout << "Slowo: " << guessedWord << " | Podpowiedzi: " << hintsRemaining << endl;
     }
 
     // Sprawdzenie warunków zakoñczenia gry
@@ -148,6 +187,7 @@ public:
         guessedWord = string(word.size(), '_');
         guessedLetters.clear();
         attemptsLeft = 6;
+        hintsRemaining = 1; // Reset liczby podpowiedzi
         startTime = time(nullptr);
 
         cout << "\nRozpoczynamy gre w Wisielca!\n";
