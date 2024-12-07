@@ -147,12 +147,12 @@ public:
             return;
         }
 
-        if (guessedLetters[guess]) {
+        if (guessedLetters[guess - 'a']) {
             cout << "Juz zgadywales te litere!" << endl;
             return;
         }
+        guessedLetters[guess - 'a'] = true;
 
-        guessedLetters[guess] = true;
 
         bool correct = false;
         for (size_t i = 0; i < word.size(); ++i) {
