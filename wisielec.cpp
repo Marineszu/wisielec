@@ -103,7 +103,7 @@ public:
     // Obs³uga wejœcia
     char handleInput() {
         char guess;
-        cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere (lub wpisz ? aby uzyc podpowiedzi): ";
+        cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere (lub wpisz znak ? aby uzyc podpowiedzi): ";
         cin >> guess;
         return guess;
     }
