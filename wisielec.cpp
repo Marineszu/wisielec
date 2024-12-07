@@ -171,12 +171,8 @@ public:
         }
     }
 
-    // Renderowanie stanu gryif (guessedLetters[guess]) {
-    cout << "Juz zgadywales te litere!" << endl;
-    return;
-}
-guessedLetters[guess] = true;
-     render() const {
+    // Renderowanie stanu gry
+    void render() const {
         cout << "Slowo: " << guessedWord << " | Podpowiedzi: " << hintsRemaining << endl;
     }
 
