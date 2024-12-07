@@ -80,25 +80,37 @@ string chooseRandomWord(const vector<string>& words) {
     return words[rand() % words.size()];
 }
 
-// Logika gry
-void playGame(const vector<string>& words, vector<HighScore>& highScores, const string& highScoresFile) {
-    string word = chooseRandomWord(words);
-    string guessedWord(word.size(), '_');
+// Klasa gry w Wisielca
+class HangmanGame {
+private:
+    vector<string> words;
+    vector<HighScore> highScores;
+    string highScoresFile;
+    string word;
+    string guessedWord;
     map<char, bool> guessedLetters;
-    int attemptsLeft = 6;
-    time_t startTime = time(nullptr);
+    int attemptsLeft;
+    time_t startTime;
 
-    cout << "\nRozpoczynamy gre w Wisielca!\n";
-    cout << "Zgadnij slowo: " << guessedWord << " (Liczba liter: " << word.size() << ")" << endl;
+public:
+    HangmanGame(const vector<string>& words, const string& highScoresFile)
+        : words(words), highScoresFile(highScoresFile), attemptsLeft(6) {
+        highScores = loadHighScores(highScoresFile);
+    }
 
-    while (attemptsLeft > 0 && guessedWord != word) {
+    // Obs³uga wejœcia
+    char handleInput() {
         char guess;
         cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere: ";
         cin >> guess;
+        return guess;
+    }
 
+    // Aktualizacja logiki gry
+    void update(char guess) {
         if (guessedLetters[guess]) {
             cout << "Juz zgadywales te litere!" << endl;
-            continue;
+            return;
         }
 
         guessedLetters[guess] = true;
@@ -120,45 +132,77 @@ void playGame(const vector<string>& words, vector<HighScore>& highScores, const 
         }
     }
 
-    time_t endTime = time(nullptr);
-    int timeTaken = static_cast<int>(endTime - startTime);
-    int score = (guessedWord == word ? attemptsLeft * 100 - timeTaken : 0);
-
-    if (guessedWord == word) {
-        cout << "\nGratulacje! Zgadles slowo: " << word << endl;
-        cout << "Twoj wynik: " << score << " pkt" << endl;
-    }
-    else {
-        cout << "\nNiestety, przegrales. Slowo to: " << word << endl;
+    // Renderowanie stanu gry
+    void render() const {
+        cout << "Slowo: " << guessedWord << endl;
     }
 
-    if (score > 0) {
-        string playerName;
-        cout << "Podaj swoje imie: ";
-        cin >> playerName;
-        highScores.push_back({ playerName, score });
-        sort(highScores.begin(), highScores.end(), [](const HighScore& a, const HighScore& b) {
-            return b.score < a.score;
-            });
-        if (highScores.size() > 10) {
-            highScores.pop_back();
+    // Sprawdzenie warunków zakoñczenia gry
+    bool isGameOver() const {
+        return (attemptsLeft <= 0 || guessedWord == word);
+    }
+
+    // Uruchomienie gry
+    void startGame() {
+        word = chooseRandomWord(words);
+        guessedWord = string(word.size(), '_');
+        guessedLetters.clear();
+        attemptsLeft = 6;
+        startTime = time(nullptr);
+
+        cout << "\nRozpoczynamy gre w Wisielca!\n";
+
+        while (!isGameOver()) {
+            render();
+            char guess = handleInput();
+            update(guess);
         }
-        saveHighScores(highScoresFile, highScores);
+
+        time_t endTime = time(nullptr);
+        int timeTaken = static_cast<int>(endTime - startTime);
+        int score = (guessedWord == word ? attemptsLeft * 100 - timeTaken : 0);
+
+        if (guessedWord == word) {
+            cout << "\nGratulacje! Zgadles slowo: " << word << endl;
+            cout << "Twoj wynik: " << score << " pkt" << endl;
+
+            if (score > 0) {
+                string playerName;
+                cout << "Podaj swoje imie: ";
+                cin >> playerName;
+                highScores.push_back({ playerName, score });
+                sort(highScores.begin(), highScores.end(), [](const HighScore& a, const HighScore& b) {
+                    return b.score > a.score;
+                    });
+                if (highScores.size() > 10) {
+                    highScores.pop_back();
+                }
+                saveHighScores(highScoresFile, highScores);
+            }
+        }
+        else {
+            cout << "\nNiestety, przegrales. Slowo to: " << word << endl;
+        }
     }
-}
+
+    // Wyœwietlanie najlepszych wyników
+    void showHighScores() const {
+        displayHighScores(highScores);
+    }
+};
 
 int main() {
     const string wordsFile = "words.txt"; // Plik z pul¹ s³ów
     const string highScoresFile = "high_scores.txt"; // Plik z najlepszymi wynikami
 
     vector<string> words = loadWords(wordsFile);
-    vector<HighScore> highScores = loadHighScores(highScoresFile);
+    HangmanGame game(words, highScoresFile);
 
-    displayHighScores(highScores);
+    game.showHighScores();
 
     char playAgain;
     do {
-        playGame(words, highScores, highScoresFile);
+        game.startGame();
         cout << "Czy chcesz zagrac ponownie? (t/n): ";
         cin >> playAgain;
     } while (playAgain == 't');
