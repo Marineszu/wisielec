@@ -100,7 +100,7 @@ public:
         highScores = loadHighScores(highScoresFile);
     }
 
-    // Obs³uga wejœcia
+    // Obsluga wejscia
     char handleInput() {
         char guess;
         cout << "Pozostale proby: " << attemptsLeft << ". Podaj litere (lub wpisz znak ? aby uzyc podpowiedzi): ";
@@ -108,7 +108,7 @@ public:
         return guess;
     }
 
-    // PodpowiedŸ: ods³ania losow¹ literê
+    // Podpowiedz
     void useHint() {
         if (hintsRemaining <= 0) {
             cout << "Nie masz juz podpowiedzi!" << endl;
@@ -136,7 +136,7 @@ public:
         guessedLetters[word[index]] = true;
 
         hintsRemaining--;
-        cout << "Ods³onieta litera: " << word[index] << endl;
+        cout << "Odslonieta litera: " << word[index] << endl;
         cout << "Slowo: " << guessedWord << endl;
     }
 
