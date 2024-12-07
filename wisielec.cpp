@@ -89,14 +89,14 @@ private:
     string highScoresFile;
     string word;
     string guessedWord;
-    map<char, bool> guessedLetters;
+    bool guessedLetters[26] = { false };
     int attemptsLeft;
     int hintsRemaining; // Liczba dostêpnych podpowiedzi
     time_t startTime;
 
 public:
     HangmanGame(const vector<string>& words, const string& highScoresFile)
-        : words(words), highScoresFile(highScoresFile), attemptsLeft(6), hintsRemaining(1) {
+        : words(words), highScoresFile(highScoresFile), attemptsLeft(6), hintsRemaining(2) {
         highScores = loadHighScores(highScoresFile);
     }
 
@@ -108,7 +108,7 @@ public:
         return guess;
     }
 
-    // Podpowiedz
+    //Podpowiedz
     void useHint() {
         if (hintsRemaining <= 0) {
             cout << "Nie masz juz podpowiedzi!" << endl;
@@ -123,7 +123,7 @@ public:
         }
 
         if (hiddenIndices.empty()) {
-            cout << "Nie ma juz ukrytych liter do ods³oniêcia!" << endl;
+            cout << "Nie ma juz ukrytych liter do odsloniecia!" << endl;
             return;
         }
 
@@ -133,26 +133,35 @@ public:
 
         size_t index = hiddenIndices[dist(gen)];
         guessedWord[index] = word[index];
-        guessedLetters[word[index]] = true;
+        guessedLetters[word[index] - 'a'] = true; // Poprawiony zapis
 
         hintsRemaining--;
         cout << "Odslonieta litera: " << word[index] << endl;
         cout << "Slowo: " << guessedWord << endl;
     }
 
+
     // Aktualizacja logiki gry
     void update(char guess) {
-        if (guess == '?') {
+        if (guess == '?') { // Sprawdzenie, czy gracz chce u¿yæ podpowiedzi
             useHint();
             return;
         }
 
-        if (guessedLetters[guess]) {
+        guess = tolower(guess); // Konwersja do ma³ej litery
+
+        if (!isalpha(guess)) { // Sprawdzenie poprawnoœci wejœcia
+            cout << "Wprowadz poprawna litere!" << endl;
+            return;
+        }
+
+
+        if (guessedLetters[guess - 'a']) { // Sprawdzanie w tablicy
             cout << "Juz zgadywales te litere!" << endl;
             return;
         }
 
-        guessedLetters[guess] = true;
+        guessedLetters[guess - 'a'] = true; // Oznaczenie litery jako zgadywanej
 
         bool correct = false;
         for (size_t i = 0; i < word.size(); ++i) {
@@ -180,14 +189,13 @@ public:
     bool isGameOver() const {
         return (attemptsLeft <= 0 || guessedWord == word);
     }
-
-    // Uruchomienie gry
+    //Start gry
     void startGame() {
         word = chooseRandomWord(words);
         guessedWord = string(word.size(), '_');
-        guessedLetters.clear();
+        fill(begin(guessedLetters), end(guessedLetters), false); // Resetowanie tablicy
         attemptsLeft = 6;
-        hintsRemaining = 1; // Reset liczby podpowiedzi
+        hintsRemaining = 2; // Reset liczby podpowiedzi
         startTime = time(nullptr);
 
         cout << "\nRozpoczynamy gre w Wisielca!\n";
@@ -224,6 +232,7 @@ public:
             cout << "\nNiestety, przegrales. Slowo to: " << word << endl;
         }
     }
+
 
     // Wyœwietlanie najlepszych wyników
     void showHighScores() const {
